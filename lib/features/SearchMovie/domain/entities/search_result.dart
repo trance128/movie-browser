@@ -6,7 +6,7 @@ import 'movie_brief.dart';
 class SearchResult extends Equatable {
   /// SearchResults
   /// Represents the result of a search
-  /// used for caching
+  /// used for caching + pagination
   /// 
   /// If no results found, totalResulsts must be set to 0 and page to 1
   
