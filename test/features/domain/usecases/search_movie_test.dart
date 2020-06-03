@@ -29,7 +29,7 @@ void main() {
         .thenAnswer((_) async => Right(searchResult));
 
     // act
-    final result = await usecase.execute(title: title);
+    final result = await usecase(Params(title: title));
 
     // assert
     expect(result, Right(searchResult));

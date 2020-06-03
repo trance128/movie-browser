@@ -11,7 +11,7 @@ class MovieDetailed extends Equatable {
 
   final String id;
   final String title;
-  final String year;
+  final int year;
   final String poster;
   final String plot;
   final String rated;
