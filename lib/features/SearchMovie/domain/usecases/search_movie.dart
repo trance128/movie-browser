@@ -4,7 +4,7 @@ import 'package:meta/meta.dart';
 
 import '../../../../core/error/failures.dart';
 import '../../../../core/usecases/usecase.dart';
-import '../entities/search_result.dart';
+import '../entities/search_result_entity.dart';
 import '../repositories/movie_search_repository.dart';
 
 class SearchMovie extends UseCase<SearchResult, Params> {

@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:movie_browser/features/SearchMovie/domain/entities/movie_detailed.dart';
+import 'package:movie_browser/features/SearchMovie/domain/entities/movie_detailed_entity.dart';
 import 'package:movie_browser/features/SearchMovie/domain/repositories/movie_search_repository.dart';
 import 'package:movie_browser/features/SearchMovie/domain/usecases/get_movie_details.dart';
 
