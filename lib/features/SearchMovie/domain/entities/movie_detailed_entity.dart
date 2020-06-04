@@ -23,7 +23,7 @@ class MovieDetailed extends Equatable {
   final String actors;
   final String language;
   final String awards;
-  final double rating;
+  final int rating;
 
   MovieDetailed({
     @required this.id,

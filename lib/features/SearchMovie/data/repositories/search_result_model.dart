@@ -24,7 +24,8 @@ class SearchResultModel extends SearchResult {
     int page = 1,
   ]) {
     // create SearchResult if the json didn't return any items
-    if (json['Response'] == "False") {
+    // if json is null, or field not found, false is returned
+    if ((json['Response'] ??= "False") == "False") {
       return SearchResultModel(
         title: title,
         found: false,
@@ -33,24 +34,33 @@ class SearchResultModel extends SearchResult {
       );
     }
 
-    // create results list
-    List<MovieBrief> results = [];
-
-    for (var result in json["Search"]) {
-      results.add(MovieBrief(
-        id: result['imdbID'],
-        title: result['Title'],
-        year: int.parse(result['Year']),
-        poster: result['Poster'],
-      ));
-    }
-
-    return SearchResultModel(
-      title: title,
-      found: true,
-      page: page,
-      totalResults: int.parse(json['totalResults']),
-      results: results,
-    );
+    return _createSearchResultModel(title, json, page);
   }
+}
+
+SearchResultModel _createSearchResultModel(
+    String title, Map<String, dynamic> json,
+    [int page = 1]) {
+  /// creates the searchresult model
+  /// This function uses http://www.omdbapi.com/ json response
+  /// To use a different api, modify this function
+
+  List<MovieBrief> results = [];
+
+  for (var result in json["Search"]) {
+    results.add(MovieBrief(
+      id: result['imdbID'],
+      title: result['Title'],
+      year: int.parse(result['Year']),
+      poster: result['Poster'],
+    ));
+  }
+
+  return SearchResultModel(
+    title: title,
+    found: true,
+    page: page,
+    totalResults: int.parse(json['totalResults']),
+    results: results,
+  );
 }
