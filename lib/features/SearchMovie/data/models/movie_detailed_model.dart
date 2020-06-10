@@ -128,7 +128,6 @@ int _buildAverageRating(Map<String, dynamic> json) {
   // ratings are formatted differently for each db
   if (json['Ratings'] != null) {
     for (var item in json['Ratings']) {
-      print('Inside json-ratings');
       // Internet Movie Databases uses format 8.6/10
       if (item['Source'] == 'Internet Movie Database') {
         if (item['Value'] == 'N/A') break;
@@ -174,7 +173,6 @@ int _buildAverageRating(Map<String, dynamic> json) {
 
   // Metascore uses format 90
   if (json['Metascore'] != 'N/A' && json['Metascore'] != null) {
-    print('In metascore');
     if (isNumeric(json['Metascore'][1])) {
       total += int.parse(json['Metascore'].substring(0, 2));
     } else {
