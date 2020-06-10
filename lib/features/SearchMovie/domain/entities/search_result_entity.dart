@@ -8,7 +8,7 @@ class SearchResult extends Equatable {
   /// Represents the result of a search
   /// used for caching + pagination
   ///
-  /// If no results found, totalResulsts must be set to 0 and page to 1
+  /// If no results found, totalResults must be set to 0 and page to 1
 
   final String title;
   final bool found;

@@ -29,7 +29,10 @@ dependencies:
   dartz: ^0.9.1
   http: ^0.12.1
   intl: ^0.16.1
-
+  data_connection_checker: ^0.3.4
+  hive: ^1.4.1+1
+  hive_flutter: ^0.3.0+2
+  path_provider: ^1.6.10
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -40,6 +43,14 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   mockito: ^4.1.1
+  hive_generator: ^0.7.0+2
+  build_runner: ^1.10.0
+  
+dependency_overrides: 
+  path: 1.7.0
+
+
+
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

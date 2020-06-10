@@ -1,3 +1,4 @@
+import 'package:hive/hive.dart';
 import 'package:movie_browser/features/SearchMovie/domain/entities/movie_detailed_entity.dart';
 import 'package:movie_browser/features/SearchMovie/domain/entities/search_result_entity.dart';
 
@@ -16,4 +17,8 @@ abstract class MovieSearchLocalDataSource {
   Future<MovieDetailed> getCachedMovieDetails(String id);
 
   Future<void> cacheMovieDetails(MovieDetailed movieToCache);
+}
+
+class MovieSearchLocalDataSourceImpl {
+  
 }

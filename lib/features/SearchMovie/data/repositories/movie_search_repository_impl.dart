@@ -3,7 +3,7 @@ import 'package:meta/meta.dart';
 import 'package:movie_browser/core/error/exception.dart';
 
 import '../../../../core/error/failures.dart';
-import '../../../../core/platform/network_info.dart';
+import '../../../../core/network/network_info.dart';
 import '../../domain/entities/movie_detailed_entity.dart';
 import '../../domain/entities/search_result_entity.dart';
 import '../../domain/repositories/movie_search_repository.dart';
