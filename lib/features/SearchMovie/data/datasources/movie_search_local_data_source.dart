@@ -1,6 +1,9 @@
 import 'package:hive/hive.dart';
-import 'package:movie_browser/features/SearchMovie/domain/entities/movie_detailed_entity.dart';
-import 'package:movie_browser/features/SearchMovie/domain/entities/search_result_entity.dart';
+import 'package:meta/meta.dart';
+import 'package:movie_browser/features/SearchMovie/data/repositories/hive_repository.dart';
+
+import '../../domain/entities/movie_detailed_entity.dart';
+import '../../domain/entities/search_result_entity.dart';
 
 abstract class MovieSearchLocalDataSource {
   // loads a previous [SearchResult] from cache
@@ -19,6 +22,19 @@ abstract class MovieSearchLocalDataSource {
   Future<void> cacheMovieDetails(MovieDetailed movieToCache);
 }
 
-class MovieSearchLocalDataSourceImpl {
-  
+class MovieSearchLocalDataSourceImpl implements MovieSearchLocalDataSource {
+  final HiveRepository<MovieDetailed> hiveMovieRepo;
+
+  // we'll need a second repo for search 
+  MovieSearchLocalDataSourceImpl({this.hiveMovieRepo});
+
+  @override
+  Future<MovieDetailed> getCachedMovieDetails(String id) {
+
+  }
+
+  @override
+  Future<void> cacheMovieDetails(MovieDetailed movieToCache) {
+
+  }
 }
