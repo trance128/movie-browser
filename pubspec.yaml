@@ -45,7 +45,8 @@ dev_dependencies:
   mockito: ^4.1.1
   hive_generator: ^0.7.0+2
   build_runner: ^1.10.0
-  
+  bloc_test: ^5.1.0
+
 dependency_overrides: 
   path: 1.7.0
 
