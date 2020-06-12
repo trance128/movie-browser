@@ -1,5 +1,3 @@
-import 'package:hive/hive.dart';
-import 'package:meta/meta.dart';
 import 'package:movie_browser/core/error/exception.dart';
 import 'package:movie_browser/features/SearchMovie/data/repositories/hive_movie_search_repository.dart';
 

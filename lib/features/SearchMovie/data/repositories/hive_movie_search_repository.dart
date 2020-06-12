@@ -15,7 +15,7 @@ abstract class HiveMovieSearchRepoAbstract extends MovieSearchLocalDataSource {
 const String MOVIEDETAILSBOX = "MovieDetailedBox";
 const String SEARCHBOX = "SearchBox";
 
-class HiveMovieSearchRepo extends MovieSearchLocalDataSourceImpl implements HiveMovieSearchRepoAbstract {
+class HiveMovieSearchRepo extends MovieSearchLocalDataSource implements HiveMovieSearchRepoAbstract {
   Box movieDetailsBox = Hive.box(MOVIEDETAILSBOX) ?? null;
   Box searchBox = Hive.box(SEARCHBOX);
 

@@ -16,22 +16,10 @@ void main() {
 
   setUp(() {
     mockHiveMovieSearchRepo = MockHiveMovieSearchRepo();
+    box = MockBox();
   });
 
   test('should be a subclass of HiveMovieSearchRepoAbstract', () {
     expect(mockHiveMovieSearchRepo, isA<HiveMovieSearchRepoAbstract>());
   });
-
-  // I can't think how to test the box opening logic?  All my ideas seem to loop, only testing 
-  // the test
-  
-  // group('box is not yet open', () {
-  //   setUp(() {
-  //     box = null;
-  //   });
-
-  //   test('', () {
-      
-  //   });
-  // });
 }
