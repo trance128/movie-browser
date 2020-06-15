@@ -62,7 +62,7 @@ class DetailsLoaded extends MovieSearchState {
   DetailsLoaded({@required this.movieDetailed});
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [movieDetailed];
 }
 
 class DetailsError extends MovieSearchState {
