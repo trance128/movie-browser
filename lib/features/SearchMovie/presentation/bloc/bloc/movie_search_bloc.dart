@@ -52,7 +52,24 @@ class MovieSearchBloc extends Bloc<MovieSearchEvent, MovieSearchState> {
         },
         (searchResult) async* {
           yield SearchLoading();
-          yield SearchLoaded(searchResult: searchResult, displayPagination: false);
+
+          if (searchResult.totalResults > 10) {
+            final int totalPages = (searchResult.totalResults / 10).ceil();
+
+            yield SearchLoaded(
+              searchResult: searchResult,
+              displayPagination: true,
+              displayFirstPageButton: searchResult.page > 2 ? true : false,
+              displayPrevPageButton: searchResult.page > 1 ? true : false,
+              displayNextPageButton: searchResult.page < totalPages ? true : false,
+              displayFinalPageButton: searchResult.page < totalPages - 1 ? true : false,
+            );
+          } else {
+            yield SearchLoaded(
+              searchResult: searchResult,
+              displayPagination: false,
+            );
+          }
         },
       );
     }

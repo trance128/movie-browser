@@ -101,7 +101,7 @@ void main() {
     blocTest(
       'should emit [SearchLoading], [SearchLoaded] when search is successful',
       build: () async => setUpSuccessfulSearch(1, 1),
-      act: (bloc) => bloc.add(SearchMovieEvent(title, testPage)),
+      act: (bloc) => bloc.add(SearchMovieEvent(title, 1)),
       expect: [
         SearchLoading(),
         SearchLoaded(
@@ -110,5 +110,148 @@ void main() {
         ),
       ],
     );
+
+    group('displayPagination', () {
+      blocTest(
+        '[SearchLoaded] shows displayPagination as true if totalResuls > 10',
+        build: () async => setUpSuccessfulSearch(1, 11),
+        act: (bloc) => bloc.add(SearchMovieEvent(title, 1)),
+        expect: [
+          SearchLoading(),
+          SearchLoaded(
+            searchResult: _buildSearchResult(1, 11),
+            displayPagination: true,
+            displayNextPageButton: true,
+          ),
+        ],
+      );
+
+      blocTest(
+        'displayFirst is false, displayNext is true when page is 1 and totalResults > 10',
+        build: () async => setUpSuccessfulSearch(1, 11),
+        act: (bloc) => bloc.add(SearchMovieEvent(title, 1)),
+        expect: [
+          SearchLoading(),
+          SearchLoaded(
+            searchResult: _buildSearchResult(1, 11),
+            displayPagination: true,
+            displayFirstPageButton: false,
+            displayNextPageButton: true,
+          )
+        ],
+      );
+
+      blocTest(
+        'displayPrev is true, displayNext is false when page is 2 and totalResults > 10',
+        build: () async => setUpSuccessfulSearch(2, 11),
+        act: (bloc) => bloc.add(SearchMovieEvent(title, 2)),
+        expect: [
+          SearchLoading(),
+          SearchLoaded(
+            searchResult: _buildSearchResult(2, 11),
+            displayPagination: true,
+            displayPrevPageButton: true,
+            displayNextPageButton: false,
+          )
+        ],
+      );
+
+      blocTest(
+        'displayPrev is true, displayNext is true when page is 2 and totalResults > 20',
+        build: () async => setUpSuccessfulSearch(2, 21),
+        act: (bloc) => bloc.add(SearchMovieEvent(title, 2)),
+        expect: [
+          SearchLoading(),
+          SearchLoaded(
+            searchResult: _buildSearchResult(2, 21),
+            displayPagination: true,
+            displayPrevPageButton: true,
+            displayNextPageButton: true,
+          )
+        ],
+      );
+
+      blocTest(
+        'displayFirst is true, displayPrev is true when page is 3 and totalResults > 20',
+        build: () async => setUpSuccessfulSearch(3, 21),
+        act: (bloc) => bloc.add(SearchMovieEvent(title, 3)),
+        expect: [
+          SearchLoading(),
+          SearchLoaded(
+            searchResult: _buildSearchResult(3, 21),
+            displayPagination: true,
+            displayFirstPageButton: true,
+            displayPrevPageButton: true,
+          )
+        ],
+      );
+
+      blocTest(
+        'displayFirst, displayPrev, & displayNext are true, when page is 3 and totalResults > 30',
+        build: () async => setUpSuccessfulSearch(3, 31),
+        act: (bloc) => bloc.add(SearchMovieEvent(title, 3)),
+        expect: [
+          SearchLoading(),
+          SearchLoaded(
+            searchResult: _buildSearchResult(3, 31),
+            displayPagination: true,
+            displayFirstPageButton: true,
+            displayNextPageButton: true,
+            displayPrevPageButton: true,
+          )
+        ],
+      );
+
+      blocTest(
+        'all display properties are true, when page is 3 and totalResults > 40',
+        build: () async => setUpSuccessfulSearch(3, 41),
+        act: (bloc) => bloc.add(SearchMovieEvent(title, 3)),
+        expect: [
+          SearchLoading(),
+          SearchLoaded(
+            searchResult: _buildSearchResult(3, 41),
+            displayPagination: true,
+            displayFirstPageButton: true,
+            displayNextPageButton: true,
+            displayPrevPageButton: true,
+            displayFinalPageButton: true,
+          )
+        ],
+      );
+
+      blocTest(
+        'all display properties are true except displayFirst, when page is 2 and totalResults > 40',
+        build: () async => setUpSuccessfulSearch(2, 41),
+        act: (bloc) => bloc.add(SearchMovieEvent(title, 2)),
+        expect: [
+          SearchLoading(),
+          SearchLoaded(
+            searchResult: _buildSearchResult(2, 41),
+            displayPagination: true,
+            displayFirstPageButton: false,
+            displayNextPageButton: true,
+            displayPrevPageButton: true,
+            displayFinalPageButton: true,
+          )
+        ],
+      );
+
+      blocTest(
+        'displayNext and displayFinal are true when, when page is 1 and totalResults > 20',
+        build: () async => setUpSuccessfulSearch(1, 21),
+        act: (bloc) => bloc.add(SearchMovieEvent(title, 1)),
+        expect: [
+          SearchLoading(),
+          SearchLoaded(
+            searchResult: _buildSearchResult(1, 21),
+            displayPagination: true,
+            displayFirstPageButton: false,
+            displayPrevPageButton: false,
+            displayNextPageButton: true,
+            displayFinalPageButton: true,
+          )
+        ],
+      );
+    });
   });
 }

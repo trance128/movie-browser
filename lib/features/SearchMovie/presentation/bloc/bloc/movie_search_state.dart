@@ -25,14 +25,21 @@ class SearchLoaded extends MovieSearchState {
   SearchLoaded({
     @required this.searchResult,
     @required this.displayPagination,
-    this.displayFirstPageButton,
-    this.displayPrevPageButton,
-    this.displayNextPageButton,
-    this.displayFinalPageButton,
+    this.displayFirstPageButton = false,
+    this.displayPrevPageButton = false,
+    this.displayNextPageButton = false,
+    this.displayFinalPageButton = false,
   });
-
+  
   @override
-  List<Object> get props => [searchResult];
+  List<Object> get props => [
+        searchResult,
+        displayPagination,
+        displayFirstPageButton,
+        displayNextPageButton,
+        displayPrevPageButton,
+        displayFinalPageButton,
+      ];
 }
 
 class SearchError extends MovieSearchState {
@@ -40,21 +47,21 @@ class SearchError extends MovieSearchState {
 
   SearchError({this.message});
 
-  @override 
+  @override
   List<Object> get props => [message];
 }
 
-class DetailsLoading extends MovieSearchState{
-  @override 
+class DetailsLoading extends MovieSearchState {
+  @override
   List<Object> get props => [];
 }
 
-class DetailsLoaded extends MovieSearchState{
+class DetailsLoaded extends MovieSearchState {
   final MovieDetailedModel movieDetailed;
 
   DetailsLoaded({@required this.movieDetailed});
 
-  @override 
+  @override
   List<Object> get props => [];
 }
 
@@ -62,7 +69,7 @@ class DetailsError extends MovieSearchState {
   final String message;
 
   DetailsError({this.message});
-  
-  @override 
+
+  @override
   List<Object> get props => [];
 }
