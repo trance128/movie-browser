@@ -14,23 +14,22 @@ class SearchMovieEvent extends MovieSearchEvent {
   List<Object> get props => [title, page];
 }
 
-class SearchMovieNextPageEvent extends MovieSearchEvent {
-  @override 
-  List<Object> get props => [];  
-}
-
-class SearchMoviePrevPageEvent extends MovieSearchEvent {
-  @override 
-  List<Object> get props => [];
-}
-
 class SearchMovieFirstPageEvent extends MovieSearchEvent {
-  @override 
+  final String title;
+
+  SearchMovieFirstPageEvent(this.title);
+
+  @override
   List<Object> get props => [];
 }
 
 class SearchMovieLastPageEvent extends MovieSearchEvent {
-  @override 
+  final String title;
+  final int page;
+
+  SearchMovieLastPageEvent(this.title, this.page);
+
+  @override
   List<Object> get props => [];
 }
 

@@ -1,9 +1,12 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 import 'package:movie_browser/core/error/failures.dart';
+import 'package:movie_browser/features/SearchMovie/data/datasources/movie_search_local_data_source.dart';
+import 'package:movie_browser/features/SearchMovie/domain/entities/search_result_entity.dart';
 import 'package:movie_browser/features/SearchMovie/domain/usecases/get_movie_details.dart'
     as g;
 import 'package:movie_browser/features/SearchMovie/domain/usecases/search_movie.dart'
@@ -34,44 +37,99 @@ class MovieSearchBloc extends Bloc<MovieSearchEvent, MovieSearchState> {
   @override
   MovieSearchState get initialState => MovieSearchInitial();
 
+  Stream<MovieSearchState> _sedaarchMovie(title, page) async* {
+    final eitherSearchResult =
+        await searchMovie(s.Params(title: title, page: page));
+
+    yield* eitherSearchResult.fold(
+      // emits appropriate errors + messages
+      (failure) async* {
+        yield SearchError(message: _mapFailureToMessage(failure));
+      },
+      (searchResult) async* {
+        yield SearchLoading();
+
+        // handles pagination if needed
+        if (searchResult.totalResults > 10) {
+          final int totalPages = (searchResult.totalResults / 10).ceil();
+
+          yield SearchLoaded(
+            searchResult: searchResult,
+            displayPagination: true,
+            displayFirstPageButton: searchResult.page > 2 ? true : false,
+            displayPrevPageButton: searchResult.page > 1 ? true : false,
+            displayNextPageButton:
+                searchResult.page < totalPages ? true : false,
+            displayFinalPageButton:
+                searchResult.page < totalPages - 1 ? true : false,
+          );
+        } else {
+          yield SearchLoaded(
+            searchResult: searchResult,
+            displayPagination: false,
+          );
+        }
+      },
+    );
+  }
+
   @override
   Stream<MovieSearchState> mapEventToState(
     MovieSearchEvent event,
   ) async* {
     if (event is SearchMovieEvent) {
-      final eitherSearchResult =
-          await searchMovie(s.Params(title: event.title, page: event.page));
-
-      yield* eitherSearchResult.fold(
-        (failure) async* {
-          if (failure is NetworkFailure) {
-            yield SearchError(message: NETWORK_FAILURE_MESSAGE);
-          } else {
-            yield SearchError(message: SERVER_FAILURE_MESSAGE);
-          }
-        },
-        (searchResult) async* {
-          yield SearchLoading();
-
-          if (searchResult.totalResults > 10) {
-            final int totalPages = (searchResult.totalResults / 10).ceil();
-
-            yield SearchLoaded(
-              searchResult: searchResult,
-              displayPagination: true,
-              displayFirstPageButton: searchResult.page > 2 ? true : false,
-              displayPrevPageButton: searchResult.page > 1 ? true : false,
-              displayNextPageButton: searchResult.page < totalPages ? true : false,
-              displayFinalPageButton: searchResult.page < totalPages - 1 ? true : false,
-            );
-          } else {
-            yield SearchLoaded(
-              searchResult: searchResult,
-              displayPagination: false,
-            );
-          }
-        },
-      );
+      yield* _searchMovie(searchMovie, event.title, event.page);
+    } else if (event is SearchMovieFirstPageEvent) {
+      yield* _searchMovie(searchMovie, event.title, 1);
+    } else if (event is SearchMovieLastPageEvent) {
+      yield* _searchMovie(searchMovie, event.title, event.page);
     }
+  }
+}
+
+Stream<MovieSearchState> _searchMovie(s.SearchMovie searchMovie, title, page,
+    ) async* {
+      final eitherSearchResult =
+          await searchMovie(s.Params(title: title, page: page));
+  yield* eitherSearchResult.fold(
+    // emits appropriate errors + messages
+    (failure) async* {
+      yield SearchError(message: _mapFailureToMessage(failure));
+    },
+    (searchResult) async* {
+      yield SearchLoading();
+
+      // handles pagination if needed
+      if (searchResult.totalResults > 10) {
+        final int totalPages = (searchResult.totalResults / 10).ceil();
+
+        yield SearchLoaded(
+          searchResult: searchResult,
+          displayPagination: true,
+          displayFirstPageButton: searchResult.page > 2 ? true : false,
+          displayPrevPageButton: searchResult.page > 1 ? true : false,
+          displayNextPageButton: searchResult.page < totalPages ? true : false,
+          displayFinalPageButton:
+              searchResult.page < totalPages - 1 ? true : false,
+        );
+      } else {
+        yield SearchLoaded(
+          searchResult: searchResult,
+          displayPagination: false,
+        );
+      }
+    },
+  );
+}
+
+String _mapFailureToMessage(Failure failure) {
+  /// displays the appropriate error message for each error type
+  switch (failure.runtimeType) {
+    case ServerFailure:
+      return SERVER_FAILURE_MESSAGE;
+    case NetworkFailure:
+      return NETWORK_FAILURE_MESSAGE;
+    default:
+      return 'An unexpected error has occured';
   }
 }

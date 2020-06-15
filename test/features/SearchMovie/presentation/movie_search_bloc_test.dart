@@ -237,7 +237,7 @@ void main() {
       );
 
       blocTest(
-        'displayNext and displayFinal are true when, when page is 1 and totalResults > 20',
+        'displayNext and displayFinal are true, when page is 1 and totalResults > 20',
         build: () async => setUpSuccessfulSearch(1, 21),
         act: (bloc) => bloc.add(SearchMovieEvent(title, 1)),
         expect: [
@@ -252,6 +252,32 @@ void main() {
           )
         ],
       );
+    });
+
+    group('searchMovie Page events', () {
+      test(
+          '[SearchMovieFirstPageEvent] calls searchMovie usecase with page = 1',
+          () async {
+        when(mockSearchMovie(any))
+            .thenAnswer((_) async => Left(NetworkFailure()));
+
+        bloc.add(SearchMovieFirstPageEvent(title));
+        await untilCalled(mockSearchMovie(any));
+
+        verify(mockSearchMovie(s.Params(title: title, page: 1)));
+      });
+
+      test(
+          '[SearchMovieLastPageEvent] calls searchMovie usecase with page = 1',
+          () async {
+        when(mockSearchMovie(any))
+            .thenAnswer((_) async => Left(NetworkFailure()));
+
+        bloc.add(SearchMovieLastPageEvent(title, 3));
+        await untilCalled(mockSearchMovie(any));
+
+        verify(mockSearchMovie(s.Params(title: title, page: 3)));
+      });
     });
   });
 }

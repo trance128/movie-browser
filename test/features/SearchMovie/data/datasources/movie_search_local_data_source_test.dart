@@ -6,7 +6,6 @@ import 'package:movie_browser/features/SearchMovie/data/models/movie_detailed_mo
 import 'package:movie_browser/features/SearchMovie/data/models/search_result_model.dart';
 import 'package:movie_browser/features/SearchMovie/data/repositories/hive_movie_search_repository.dart';
 import 'package:movie_browser/features/SearchMovie/domain/entities/movie_brief_entity.dart';
-import 'package:movie_browser/features/SearchMovie/domain/entities/movie_detailed_entity.dart';
 
 class MockHiveMovieSearchRepo extends Mock implements HiveMovieSearchRepo {}
 
