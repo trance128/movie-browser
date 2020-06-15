@@ -4,7 +4,7 @@ import 'package:movie_browser/features/SearchMovie/data/models/search_result_mod
 import 'package:movie_browser/features/SearchMovie/domain/entities/movie_brief_entity.dart';
 import 'package:movie_browser/features/SearchMovie/domain/entities/search_result_entity.dart';
 
-import '../../../fixtures/fixture_reader.dart';
+import '../../../../fixtures/fixture_reader.dart';
 
 void main() {
   final String title = "asdf";

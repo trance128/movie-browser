@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:movie_browser/features/SearchMovie/data/models/movie_detailed_model.dart';
 import 'package:movie_browser/features/SearchMovie/domain/entities/movie_detailed_entity.dart';
 
-import '../../../fixtures/fixture_reader.dart';
+import '../../../../fixtures/fixture_reader.dart';
 
 void main() {
   String id = "1";

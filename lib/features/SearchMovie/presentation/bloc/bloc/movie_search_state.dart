@@ -25,10 +25,10 @@ class SearchLoaded extends MovieSearchState {
   SearchLoaded({
     @required this.searchResult,
     @required this.displayPagination,
-    @required this.displayFirstPageButton,
-    @required this.displayPrevPageButton,
-    @required this.displayNextPageButton,
-    @required this.displayFinalPageButton,
+    this.displayFirstPageButton,
+    this.displayPrevPageButton,
+    this.displayNextPageButton,
+    this.displayFinalPageButton,
   });
 
   @override
