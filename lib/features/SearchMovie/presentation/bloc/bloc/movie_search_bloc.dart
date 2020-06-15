@@ -84,21 +84,39 @@ class MovieSearchBloc extends Bloc<MovieSearchEvent, MovieSearchState> {
     } else if (event is SearchMovieLastPageEvent) {
       yield* _searchMovie(searchMovie, event.title, event.page);
     }
+
+    // GetMovieDetailsEvent.  Yields Loading state, awaits details, then emits
+    // error state or loaded state
+    else if (event is GetMovieDetailsEvent) {
+      yield DetailsLoading();
+      final eitherMovieDetails = await getMovieDetails(g.Params(id: event.id));
+
+      yield* eitherMovieDetails.fold(
+        (failure) async* {
+          yield DetailsError(message: _mapFailureToMessage(failure));
+        },
+        (movieDetailed) async* {
+          yield DetailsLoaded(movieDetailed: movieDetailed);
+        },
+      );
+    }
   }
 }
 
-Stream<MovieSearchState> _searchMovie(s.SearchMovie searchMovie, title, page,
-    ) async* {
-      final eitherSearchResult =
-          await searchMovie(s.Params(title: title, page: page));
+Stream<MovieSearchState> _searchMovie(
+  s.SearchMovie searchMovie,
+  title,
+  page,
+) async* {
+  yield SearchLoading();
+  final eitherSearchResult =
+      await searchMovie(s.Params(title: title, page: page));
   yield* eitherSearchResult.fold(
     // emits appropriate errors + messages
     (failure) async* {
       yield SearchError(message: _mapFailureToMessage(failure));
     },
     (searchResult) async* {
-      yield SearchLoading();
-
       // handles pagination if needed
       if (searchResult.totalResults > 10) {
         final int totalPages = (searchResult.totalResults / 10).ceil();

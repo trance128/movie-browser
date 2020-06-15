@@ -3,6 +3,7 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:movie_browser/core/error/failures.dart';
+import 'package:movie_browser/features/SearchMovie/data/models/movie_detailed_model.dart';
 import 'package:movie_browser/features/SearchMovie/data/models/search_result_model.dart';
 import 'package:movie_browser/features/SearchMovie/domain/usecases/get_movie_details.dart';
 import 'package:movie_browser/features/SearchMovie/domain/usecases/search_movie.dart'
@@ -32,7 +33,7 @@ void main() {
     expect(bloc.initialState, equals(MovieSearchInitial()));
   });
 
-  group('mockSearchMovie', () {
+  group('searchMovie', () {
     final String title = "abc";
     final int testPage = 1;
 
@@ -81,6 +82,7 @@ void main() {
       },
       act: (bloc) => bloc.add(SearchMovieEvent(title, testPage)),
       expect: [
+        SearchLoading(),
         SearchError(message: NETWORK_FAILURE_MESSAGE),
       ],
     );
@@ -94,6 +96,7 @@ void main() {
       },
       act: (bloc) => bloc.add(SearchMovieEvent(title, testPage)),
       expect: [
+        SearchLoading(),
         SearchError(message: SERVER_FAILURE_MESSAGE),
       ],
     );
@@ -267,8 +270,7 @@ void main() {
         verify(mockSearchMovie(s.Params(title: title, page: 1)));
       });
 
-      test(
-          '[SearchMovieLastPageEvent] calls searchMovie usecase with page = 1',
+      test('[SearchMovieLastPageEvent] calls searchMovie usecase with page = 1',
           () async {
         when(mockSearchMovie(any))
             .thenAnswer((_) async => Left(NetworkFailure()));
@@ -279,5 +281,66 @@ void main() {
         verify(mockSearchMovie(s.Params(title: title, page: 3)));
       });
     });
+  });
+
+  group('getMovieDetails', () {
+    final String id = "tt123";
+    final String title = "abc";
+    final MovieDetailedModel movieDetailed =
+        MovieDetailedModel(id: id, title: title, year: 2020);
+
+    test('calls getMovieDetails usecase', () async {
+      when(mockGetMovieDetails(any))
+          .thenAnswer((_) async => Left(NetworkFailure()));
+
+      bloc.add(GetMovieDetailsEvent(id));
+      await untilCalled(mockGetMovieDetails(any));
+
+      verify(mockGetMovieDetails(any));
+    });
+
+    blocTest(
+      'Emits [DetailsError] when network error occurs',
+      build: () async {
+        when(mockGetMovieDetails(any))
+            .thenAnswer((_) async => Left(NetworkFailure()));
+        return bloc;
+      },
+      act: (bloc) => bloc.add(GetMovieDetailsEvent(id)),
+      expect: [
+        DetailsLoading(),
+        DetailsError(message: NETWORK_FAILURE_MESSAGE),
+      ],
+    );
+
+    blocTest(
+      'Emites [DetailsError] with correct message when server error occurs',
+      build: () async {
+        when(mockGetMovieDetails(any))
+            .thenAnswer((_) async => Left(ServerFailure()));
+        return bloc;
+      },
+      act: (bloc) => bloc.add(GetMovieDetailsEvent(id)),
+      expect: [
+        DetailsLoading(),
+        DetailsError(message: NETWORK_FAILURE_MESSAGE),
+      ],
+    );
+
+    blocTest(
+      'should emit [DetailsLoading], [DetailsLoaded] when search is successful',
+      build: () async {
+        when(mockGetMovieDetails(any))
+            .thenAnswer((_) async => Right(movieDetailed));
+        return bloc;
+      },
+      act: (bloc) => bloc.add(GetMovieDetailsEvent(id)),
+      expect: [
+        DetailsLoading(),
+        DetailsLoaded(
+          movieDetailed: movieDetailed,
+        ),
+      ],
+    );
   });
 }
