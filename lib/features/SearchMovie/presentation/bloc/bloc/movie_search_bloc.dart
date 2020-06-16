@@ -1,12 +1,9 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 import 'package:movie_browser/core/error/failures.dart';
-import 'package:movie_browser/features/SearchMovie/data/datasources/movie_search_local_data_source.dart';
-import 'package:movie_browser/features/SearchMovie/domain/entities/search_result_entity.dart';
 import 'package:movie_browser/features/SearchMovie/domain/usecases/get_movie_details.dart'
     as g;
 import 'package:movie_browser/features/SearchMovie/domain/usecases/search_movie.dart'
@@ -36,42 +33,6 @@ class MovieSearchBloc extends Bloc<MovieSearchEvent, MovieSearchState> {
 
   @override
   MovieSearchState get initialState => MovieSearchInitial();
-
-  Stream<MovieSearchState> _sedaarchMovie(title, page) async* {
-    final eitherSearchResult =
-        await searchMovie(s.Params(title: title, page: page));
-
-    yield* eitherSearchResult.fold(
-      // emits appropriate errors + messages
-      (failure) async* {
-        yield SearchError(message: _mapFailureToMessage(failure));
-      },
-      (searchResult) async* {
-        yield SearchLoading();
-
-        // handles pagination if needed
-        if (searchResult.totalResults > 10) {
-          final int totalPages = (searchResult.totalResults / 10).ceil();
-
-          yield SearchLoaded(
-            searchResult: searchResult,
-            displayPagination: true,
-            displayFirstPageButton: searchResult.page > 2 ? true : false,
-            displayPrevPageButton: searchResult.page > 1 ? true : false,
-            displayNextPageButton:
-                searchResult.page < totalPages ? true : false,
-            displayFinalPageButton:
-                searchResult.page < totalPages - 1 ? true : false,
-          );
-        } else {
-          yield SearchLoaded(
-            searchResult: searchResult,
-            displayPagination: false,
-          );
-        }
-      },
-    );
-  }
 
   @override
   Stream<MovieSearchState> mapEventToState(

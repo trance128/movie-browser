@@ -61,3 +61,4 @@ Future<void> init() async {
     ..registerAdapter(MovieDetailedHiveAdapter())
     ..registerAdapter(SearchHiveAdapter());
 }
+
