@@ -4,7 +4,22 @@ import 'package:movie_browser/features/SearchMovie/presentation/bloc/bloc/movie_
 
 import '../../../../injection_container.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
+  static const routeName = "/home";
+
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  final controller = TextEditingController();
+  String input;
+
+  void addSearchEvent() {
+    BlocProvider.of<MovieSearchBloc>(context).add(SearchMovieEvent(input));
+    Navigator.push(context, route)
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,6 +41,21 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 20),
+                TextField(
+                  controller: controller,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                  onChanged: (value) => input = value,
+                  onSubmitted: (_) => addSearchEvent,
+                ),
+                SizedBox(height: 20),
+                FlatButton(
+                  child: Text('Search'),
+                  onPressed: addSearchEvent,
+                ),
               ],
             ),
           ),

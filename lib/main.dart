@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:movie_browser/features/SearchMovie/presentation/pages/search_result_page.dart';
 
 import 'features/SearchMovie/presentation/bloc/bloc/movie_search_bloc.dart';
 import 'features/SearchMovie/presentation/pages/home_screen.dart';
@@ -14,13 +15,16 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: "Movie Browser",
-      home: BlocProvider(
-        create: (_) => sl<MovieSearchBloc>(),
-        child: HomeScreen(),
-      ),
+    return BlocProvider(
+      create: (_) => sl<MovieSearchBloc>(),
+      child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: "Movie Browser",
+          home: HomeScreen(),
+          routes: {
+            HomeScreen.routeName: (context) => HomeScreen(),
+            SearchResultPage.routeName: (context) => SearchResultPage(),
+          }),
     );
   }
 }
