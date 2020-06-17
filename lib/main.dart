@@ -18,13 +18,14 @@ class MyApp extends StatelessWidget {
     return BlocProvider(
       create: (_) => sl<MovieSearchBloc>(),
       child: MaterialApp(
-          debugShowCheckedModeBanner: false,
-          title: "Movie Browser",
-          home: HomeScreen(),
-          routes: {
-            HomeScreen.routeName: (context) => HomeScreen(),
-            SearchResultPage.routeName: (context) => SearchResultPage(),
-          }),
+        debugShowCheckedModeBanner: false,
+        title: "Movie Browser",
+        home: HomeScreen(),
+        routes: {
+          HomeScreen.routeName: (context) => HomeScreen(),
+          SearchResultPage.routeName: (context) => SearchResultPage(),
+        },
+      ),
     );
   }
 }

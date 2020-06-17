@@ -8,7 +8,7 @@ import 'package:movie_browser/features/SearchMovie/data/models/search_result_mod
 import 'package:movie_browser/features/SearchMovie/domain/usecases/get_movie_details.dart';
 import 'package:movie_browser/features/SearchMovie/domain/usecases/search_movie.dart'
     as s;
-import 'package:movie_browser/features/SearchMovie/presentation/bloc/bloc/movie_search_bloc.dart';
+import 'package:movie_browser/features/SearchMovie/presentation/bloc/movie_search_bloc/movie_search_bloc.dart';
 
 class MockSearchMovie extends Mock implements s.SearchMovie {}
 

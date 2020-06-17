@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:movie_browser/features/SearchMovie/presentation/bloc/bloc/movie_search_bloc.dart';
 
-import '../../../../injection_container.dart';
+import '../bloc/bloc/movie_search_bloc.dart';
+import '../widgets/search_box.dart';
+import 'search_result_page.dart';
 
 class HomeScreen extends StatefulWidget {
   static const routeName = "/home";
@@ -17,7 +18,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void addSearchEvent() {
     BlocProvider.of<MovieSearchBloc>(context).add(SearchMovieEvent(input));
-    Navigator.push(context, route)
+    Navigator.of(context).pushNamed(SearchResultPage.routeName);
   }
 
   @override
@@ -41,19 +42,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
                 SizedBox(height: 20),
-                TextField(
-                  controller: controller,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                  ),
-                  onChanged: (value) => input = value,
-                  onSubmitted: (_) => addSearchEvent,
-                ),
+                SearchBox(),
                 SizedBox(height: 20),
                 FlatButton(
-                  child: Text('Search'),
+                  child: Icon(Icons.search),
                   onPressed: addSearchEvent,
                 ),
               ],
