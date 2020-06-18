@@ -14,13 +14,17 @@ class SearchResultPage extends StatefulWidget {
 }
 
 class _SearchResultPageState extends State<SearchResultPage> {
-  void addSearchEvent() {
-    BlocProvider.of<MovieSearchBloc>(context).add(SearchMovieEvent());
+  MovieSearchBloc bloc;
+
+  void addSearchEvent(MovieSearchBloc bloc) {
+    bloc.add(SearchMovieEvent());
     Navigator.of(context).pushNamed(SearchResultPage.routeName);
   }
 
   @override
   Widget build(BuildContext context) {
+    bloc = BlocProvider.of<MovieSearchBloc>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: SearchBox(small: true),
@@ -35,44 +39,74 @@ class _SearchResultPageState extends State<SearchResultPage> {
               ),
               width: MediaQuery.of(context).size.width * 0.05,
             ),
-            onPressed: addSearchEvent,
+            onPressed: () => addSearchEvent(bloc),
           )
         ],
       ),
-      body: _buildBody(context),
+      body: BlocBuilder<MovieSearchBloc, MovieSearchState>(
+        builder: (context, state) {
+          print('before the if statements');
+          if (state is MovieSearchInitial) {
+            print('Moviesearcchinitial');
+            return Container();
+          } else if (state is SearchLoading) {
+            print('loading');
+            return CircularProgressIndicator();
+          } else if (state is SearchLoaded) {
+            print('loaded');
+            return _buildLoadedState(context, state);
+          } else {
+            return Container(child: Text('State is $state'));
+          }
+        },
+      ),
     );
+  }
+
+  @override
+  dispose() {
+    bloc.close();
+    super.dispose();
   }
 }
 
-BlocProvider<MovieSearchBloc> _buildBody(BuildContext context) {
-  return BlocProvider(
-    create: (_) => sl<MovieSearchBloc>(),
-    child: BlocBuilder<MovieSearchBloc, MovieSearchState>(
-        builder: (context, state) {
-      if (state is MovieSearchInitial) {
-        return Container();
-      } else if (state is SearchLoading) {
-        return CircularProgressIndicator();
-      } else if (state is SearchLoaded) {
-        return ListView.builder(itemBuilder: null);
-      }
-    }),
-  );
-}
+// Widget _buildBody(BuildContext context, MovieSearchBloc bloc) {
+//   final state = bloc.state;
+
+//   if (state is MovieSearchInitial) {
+//     print('Moviesearcchinitial');
+//     return Container();
+//   } else if (state is SearchLoading) {
+//     print('loading');
+//     return Center(
+//       child: CircularProgressIndicator(),
+//     );
+//   } else if (state is SearchLoaded) {
+//     print('loaded');
+//     return ListView.builder(itemBuilder: null);
+//   } else {
+//     return Container(child: Text('State is $state'));
+//   }
+// }
 
 Widget _buildLoadedState(BuildContext context, SearchLoaded state) {
+  print('loaded state');
   return Column(
     children: [
-      ListView.builder(
-        itemCount: state.searchResult.results.length,
-        itemBuilder: (BuildContext ctx, int index) {
-          final MovieBriefHive item = state.searchResult.results[index];
-          return ListTile(
-            leading: Image(fit: BoxFit.cover, image: NetworkImage(item.poster)),
-            title: Text(item.title),
-            subtitle: Text('${item.year}'),
-          );
-        },
+      Container(
+        height: MediaQuery.of(context).size.height * 0.8,
+        child: ListView.builder(
+          itemCount: state.searchResult.results.length,
+          itemBuilder: (BuildContext ctx, int index) {
+            final MovieBriefHive item = state.searchResult.results[index];
+            return ListTile(
+              leading:
+                  Image(fit: BoxFit.cover, image: NetworkImage(item.poster)),
+              title: Text(item.title),
+              subtitle: Text('${item.year}'),
+            );
+          },
+        ),
       ),
     ],
   );

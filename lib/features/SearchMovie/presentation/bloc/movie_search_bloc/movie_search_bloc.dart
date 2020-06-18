@@ -48,6 +48,7 @@ class MovieSearchBloc extends Bloc<MovieSearchEvent, MovieSearchState> {
 
     // [SearchMovieEvent]
     if (event is SearchMovieEvent) {
+      print('about to yield searchmovie');
       yield* _searchMovie(searchMovie, _title, event.page);
     } else if (event is SearchMovieFirstPageEvent) {
       yield* _searchMovie(searchMovie, _title, 1);
@@ -78,19 +79,24 @@ Stream<MovieSearchState> _searchMovie(
   title,
   page,
 ) async* {
+  print('should yield searchloading');
   yield SearchLoading();
+  print('should have yieleded searchloading');
   final eitherSearchResult =
       await searchMovie(s.Params(title: title, page: page));
   yield* eitherSearchResult.fold(
     // emits appropriate errors + messages
     (failure) async* {
+      print('yielding error');
       yield SearchError(message: _mapFailureToMessage(failure));
     },
     (searchResult) async* {
       // handles pagination if needed
+      print('didn\'t get an erorr');
       if (searchResult.totalResults > 10) {
         final int totalPages = (searchResult.totalResults / 10).ceil();
 
+        print('yielindg > 10 loaded');
         yield SearchLoaded(
           searchResult: searchResult,
           displayPagination: true,
@@ -101,6 +107,7 @@ Stream<MovieSearchState> _searchMovie(
               searchResult.page < totalPages - 1 ? true : false,
         );
       } else {
+        print('yielding < 10 loaded');
         yield SearchLoaded(
           searchResult: searchResult,
           displayPagination: false,
