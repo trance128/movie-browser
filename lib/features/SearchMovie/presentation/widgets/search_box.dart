@@ -22,16 +22,49 @@ class _SearchBoxState extends State<SearchBox> {
   @override
   Widget build(BuildContext context) {
     final bloc = BlocProvider.of<MovieSearchBloc>(context);
+    final size = MediaQuery.of(context).size;
 
-    return TextField(
-      controller: TextEditingController(text: bloc.getTitle),
-      decoration: InputDecoration(
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(20),
+    if (widget.small) {
+      return Container(
+        width: double.infinity,
+        height: size.height * .05,
+        child: TextField(
+          textAlign: TextAlign.center,
+          cursorColor: Colors.white,
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 18,
+          ),
+          controller: TextEditingController(text: bloc.getTitle),
+          onChanged: (value) => bloc.add(TitleChangedEvent(value)),
+          onSubmitted: (_) => searchTitle(bloc),
         ),
+      );
+    }
+
+    return Container(
+      width: size.width * .9,
+      height: size.height * 0.07,
+      child: TextField(
+        cursorColor: Colors.white,
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 18,
+        ),
+        controller: TextEditingController(text: bloc.getTitle),
+        decoration: InputDecoration(
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.white, width: 2),
+            borderRadius: BorderRadius.circular(5),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(5),
+            borderSide: BorderSide(color: Colors.white, width: 2),
+          ),
+        ),
+        onChanged: (value) => bloc.add(TitleChangedEvent(value)),
+        onSubmitted: (_) => searchTitle(bloc),
       ),
-      onChanged: (value) => bloc.add(TitleChangedEvent(value)),
-      onSubmitted: (_) => searchTitle(bloc),
     );
   }
 }

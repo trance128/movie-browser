@@ -21,7 +21,7 @@ class SearchHiveAdapter extends TypeAdapter<SearchHive> {
       found: fields[1] as bool,
       page: fields[2] as int,
       totalResults: fields[3] as int,
-      results: (fields[4] as List)?.cast<MovieBrief>(),
+      results: (fields[4] as List)?.cast<MovieBriefHive>(),
     );
   }
 

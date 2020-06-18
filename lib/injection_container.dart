@@ -7,6 +7,7 @@ import 'package:path_provider/path_provider.dart' as path_provider;
 import 'core/network/network_info.dart';
 import 'features/SearchMovie/data/datasources/movie_search_local_data_source.dart';
 import 'features/SearchMovie/data/datasources/movie_search_remote_data_source.dart';
+import 'features/SearchMovie/data/models/movie_brief_hive_model.dart';
 import 'features/SearchMovie/data/models/movie_detailed_hive_model.dart';
 import 'features/SearchMovie/data/models/search_result_hive_model.dart';
 import 'features/SearchMovie/data/repositories/hive_movie_search_repository.dart';
@@ -55,7 +56,8 @@ Future<void> init() async {
   Hive
     ..init(appDocumentDirectory.path)
     ..registerAdapter(MovieDetailedHiveAdapter())
-    ..registerAdapter(SearchHiveAdapter());
+    ..registerAdapter(SearchHiveAdapter())
+    ..registerAdapter(MovieBriefHiveAdapter());
 
   sl.registerFactory(() => HiveMovieSearchRepo());
   sl.registerLazySingleton(() => http.Client());
