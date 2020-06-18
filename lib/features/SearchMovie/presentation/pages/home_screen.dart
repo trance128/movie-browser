@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../bloc/bloc/movie_search_bloc.dart';
+import '../bloc/movie_search_bloc/movie_search_bloc.dart';
 import '../widgets/search_box.dart';
 import 'search_result_page.dart';
 
@@ -17,7 +17,7 @@ class _HomeScreenState extends State<HomeScreen> {
   String input;
 
   void addSearchEvent() {
-    BlocProvider.of<MovieSearchBloc>(context).add(SearchMovieEvent(input));
+    BlocProvider.of<MovieSearchBloc>(context).add(SearchMovieEvent());
     Navigator.of(context).pushNamed(SearchResultPage.routeName);
   }
 

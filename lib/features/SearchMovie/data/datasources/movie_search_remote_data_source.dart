@@ -3,12 +3,12 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 import 'package:movie_browser/core/error/exception.dart';
-import 'package:movie_browser/features/SearchMovie/data/models/search_result_model.dart';
+import 'package:movie_browser/features/SearchMovie/data/models/movie_detailed_hive_model.dart';
+import 'package:movie_browser/features/SearchMovie/data/models/search_result_hive_model.dart';
 
 import '../../../../api_key.dart';
 import '../../domain/entities/movie_detailed_entity.dart';
 import '../../domain/entities/search_result_entity.dart';
-import '../models/movie_detailed_model.dart';
 
 abstract class MovieSearchRemoteDataSource {
   // searh for a movie from the http://www.omdbapi.com/?s= endpoint
@@ -31,7 +31,7 @@ class MovieSearchRemoteDataSourceImpl extends MovieSearchRemoteDataSource {
 
   MovieSearchRemoteDataSourceImpl({@required this.client});
 
-  Future<MovieDetailedModel> getMovieDetails(String id) async {
+  Future<MovieDetailedHive> getMovieDetails(String id) async {
     /// expects a [String] id, representing the imdbID of a movie.  This id
     /// is saved as id in both [MovieBrief] and [MovieDetailed]
     /// returns a [MovieDetailed] object, or [ServerException] in case of failure
@@ -40,7 +40,7 @@ class MovieSearchRemoteDataSourceImpl extends MovieSearchRemoteDataSource {
 
     if (response.statusCode != 200) throw ServerException();
 
-    return MovieDetailedModel.fromJson(json.decode(response.body));
+    return MovieDetailedHive.fromJson(json.decode(response.body));
   }
 
   Future<SearchResult> searchMovie(String title, [int page = 1]) async {
@@ -52,7 +52,7 @@ class MovieSearchRemoteDataSourceImpl extends MovieSearchRemoteDataSource {
 
     if (response.statusCode != 200) throw ServerException();
 
-    return SearchResultModel.fromJson(title, json.decode(response.body), page);
+    return SearchHive.fromJson(title, json.decode(response.body), page);
   }
 
   String _buildSearchUrl(String title, int page) {

@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:movie_browser/features/SearchMovie/presentation/pages/search_result_page.dart';
 
-import 'features/SearchMovie/presentation/bloc/bloc/movie_search_bloc.dart';
+import 'features/SearchMovie/presentation/bloc/movie_search_bloc/movie_search_bloc.dart';
 import 'features/SearchMovie/presentation/pages/home_screen.dart';
+import 'features/SearchMovie/presentation/pages/search_result_page.dart';
 import 'injection_container.dart' as di;
 import 'injection_container.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await di.init();
   runApp(MyApp());
 }

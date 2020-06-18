@@ -71,3 +71,4 @@ class MovieDetailedHiveAdapter extends TypeAdapter<MovieDetailedHive> {
       ..write(obj.rating);
   }
 }
+

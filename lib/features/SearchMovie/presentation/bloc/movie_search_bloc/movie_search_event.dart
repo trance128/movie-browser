@@ -4,14 +4,22 @@ abstract class MovieSearchEvent extends Equatable {
   const MovieSearchEvent();
 }
 
-class SearchMovieEvent extends MovieSearchEvent {
+class TitleChangedEvent extends MovieSearchEvent {
   final String title;
+
+  const TitleChangedEvent(this.title);
+
+  @override 
+  List<Object> get props => [title];
+}
+
+class SearchMovieEvent extends MovieSearchEvent {
   final int page;
 
-  SearchMovieEvent(this.title, [this.page = 1]);
+  SearchMovieEvent([this.page = 1]);
 
   @override
-  List<Object> get props => [title, page];
+  List<Object> get props => [page];
 }
 
 class SearchMovieFirstPageEvent extends MovieSearchEvent {
@@ -24,10 +32,9 @@ class SearchMovieFirstPageEvent extends MovieSearchEvent {
 }
 
 class SearchMovieLastPageEvent extends MovieSearchEvent {
-  final String title;
   final int page;
 
-  SearchMovieLastPageEvent(this.title, this.page);
+  SearchMovieLastPageEvent(this.page);
 
   @override
   List<Object> get props => [];

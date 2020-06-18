@@ -4,13 +4,12 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 import 'package:movie_browser/core/error/failures.dart';
+import 'package:movie_browser/features/SearchMovie/data/models/movie_detailed_hive_model.dart';
+import 'package:movie_browser/features/SearchMovie/data/models/search_result_hive_model.dart';
 import 'package:movie_browser/features/SearchMovie/domain/usecases/get_movie_details.dart'
     as g;
 import 'package:movie_browser/features/SearchMovie/domain/usecases/search_movie.dart'
     as s;
-
-import '../../../data/models/movie_detailed_model.dart';
-import '../../../data/models/search_result_model.dart';
 
 part 'movie_search_event.dart';
 part 'movie_search_state.dart';
@@ -22,6 +21,10 @@ const String NETWORK_FAILURE_MESSAGE =
 class MovieSearchBloc extends Bloc<MovieSearchEvent, MovieSearchState> {
   final s.SearchMovie searchMovie;
   final g.GetMovieDetails getMovieDetails;
+
+  String _title = '';
+
+  String get getTitle => _title;
 
   MovieSearchBloc({
     @required s.SearchMovie search,
@@ -38,12 +41,18 @@ class MovieSearchBloc extends Bloc<MovieSearchEvent, MovieSearchState> {
   Stream<MovieSearchState> mapEventToState(
     MovieSearchEvent event,
   ) async* {
+    // [TitleChangedEvent]
+    if (event is TitleChangedEvent) {
+      _title = event.title;
+    }
+
+    // [SearchMovieEvent]
     if (event is SearchMovieEvent) {
-      yield* _searchMovie(searchMovie, event.title, event.page);
+      yield* _searchMovie(searchMovie, _title, event.page);
     } else if (event is SearchMovieFirstPageEvent) {
-      yield* _searchMovie(searchMovie, event.title, 1);
+      yield* _searchMovie(searchMovie, _title, 1);
     } else if (event is SearchMovieLastPageEvent) {
-      yield* _searchMovie(searchMovie, event.title, event.page);
+      yield* _searchMovie(searchMovie, _title, event.page);
     }
 
     // GetMovieDetailsEvent.  Yields Loading state, awaits details, then emits

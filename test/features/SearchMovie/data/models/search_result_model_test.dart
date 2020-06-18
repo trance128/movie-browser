@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:movie_browser/features/SearchMovie/data/models/search_result_model.dart';
-import 'package:movie_browser/features/SearchMovie/domain/entities/movie_brief_entity.dart';
+import 'package:movie_browser/features/SearchMovie/data/models/movie_brief_hive_model.dart';
+import 'package:movie_browser/features/SearchMovie/data/models/search_result_hive_model.dart';
 import 'package:movie_browser/features/SearchMovie/domain/entities/search_result_entity.dart';
 
 import '../../../../fixtures/fixture_reader.dart';
@@ -10,21 +10,21 @@ void main() {
   final String title = "asdf";
   final int page = 1;
   final int secondPage = 2;
-  final searchResultModel = SearchResultModel(
-      title: title, found: false, page: page, totalResults: 0);
+  final SearchHive searchHive =
+      SearchHive(title: title, found: false, page: page, totalResults: 0);
 
   Map<String, dynamic> _getJson(String path) {
     /// returns the decoded json from a specified fixture's path
     return json.decode(fixture(path));
   }
 
-  final SearchResultModel expectedSingleResult = SearchResultModel(
+  final SearchHive expectedSingleResult = SearchHive(
     title: title,
     page: page,
     found: true,
     totalResults: 1,
     results: [
-      MovieBrief(
+      MovieBriefHive(
         id: "1",
         title: title,
         year: 2018,
@@ -36,23 +36,23 @@ void main() {
 
   test('should be a subclass of SearchResult entity', () {
     // assert
-    expect(searchResultModel, isA<SearchResult>());
+    expect(SearchHive, isA<SearchResult>());
   });
 
   group('fromJson', () {
     test('should return a valid model from JSON when search fails', () async {
       final jsonMap = _getJson('search_result_failed.json');
 
-      final result = SearchResultModel.fromJson(title, jsonMap);
+      final result = SearchHive.fromJson(title, jsonMap);
 
-      expect(result, searchResultModel);
+      expect(result, searchHive);
     });
 
     test('registers page as 1 and totalResults as 0 when search fails',
         () async {
       final jsonMap = _getJson('search_result_failed.json');
 
-      final result = SearchResultModel.fromJson(title, jsonMap);
+      final result = SearchHive.fromJson(title, jsonMap);
 
       expect(result.page, 1);
       expect(result.totalResults, 0);
@@ -64,7 +64,7 @@ void main() {
       final jsonMap = _getJson('search_result_by_title.json');
 
       // act
-      final result = SearchResultModel.fromJson(title, jsonMap);
+      final result = SearchHive.fromJson(title, jsonMap);
 
       // assert
 
@@ -77,7 +77,7 @@ void main() {
       final jsonMap = _getJson('search_result_by_title.json');
 
       // act
-      final result = SearchResultModel.fromJson(title, jsonMap);
+      final result = SearchHive.fromJson(title, jsonMap);
 
       // assert
       expect(result, expectedSingleResult);
@@ -88,17 +88,17 @@ void main() {
       final jsonMap = _getJson('search_result_by_title.json');
 
       // act
-      final result = SearchResultModel.fromJson(title, jsonMap, secondPage);
+      final result = SearchHive.fromJson(title, jsonMap, secondPage);
 
       // assert
-            // assert
-      final SearchResultModel expectedResult = SearchResultModel(
+      // assert
+      final SearchHive expectedResult = SearchHive(
         title: title,
         page: secondPage,
         found: true,
         totalResults: 1,
         results: [
-          MovieBrief(
+          MovieBriefHive(
             id: "1",
             title: title,
             year: 2018,
@@ -116,7 +116,7 @@ void main() {
           json.decode(fixture('search_result_length_2.json'));
 
       // act
-      final result = SearchResultModel.fromJson(title, jsonMap, page);
+      final result = SearchHive.fromJson(title, jsonMap, page);
 
       // assert
       expect(result.results.length, 2);
@@ -128,16 +128,16 @@ void main() {
       final overwrittenTitle = "Hello Again, World";
 
       // act
-      final result = SearchResultModel.fromJson(overwrittenTitle, jsonMap, secondPage);
+      final result = SearchHive.fromJson(overwrittenTitle, jsonMap, secondPage);
 
       // assert
-      final SearchResultModel expectedResult = SearchResultModel(
+      final SearchHive expectedResult = SearchHive(
         title: overwrittenTitle,
         page: secondPage,
         found: true,
         totalResults: 1,
         results: [
-          MovieBrief(
+          MovieBriefHive(
             id: "1",
             title: title,
             year: 2018,

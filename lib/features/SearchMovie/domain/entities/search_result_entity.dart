@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
-import 'movie_brief_entity.dart';
+import '../../data/models/movie_brief_hive_model.dart';
 
 class SearchResult extends Equatable {
   /// SearchResults
@@ -14,7 +14,7 @@ class SearchResult extends Equatable {
   final bool found;
   final int page;
   final int totalResults;
-  final List<MovieBrief> results;
+  final List<MovieBriefHive> results;
 
   SearchResult({
     @required this.title,

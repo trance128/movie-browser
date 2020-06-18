@@ -6,10 +6,9 @@ import 'package:movie_browser/core/error/failures.dart';
 import 'package:movie_browser/core/network/network_info.dart';
 import 'package:movie_browser/features/SearchMovie/data/datasources/movie_search_local_data_source.dart';
 import 'package:movie_browser/features/SearchMovie/data/datasources/movie_search_remote_data_source.dart';
-import 'package:movie_browser/features/SearchMovie/data/models/movie_detailed_model.dart';
-import 'package:movie_browser/features/SearchMovie/data/models/search_result_model.dart';
+import 'package:movie_browser/features/SearchMovie/data/models/movie_detailed_hive_model.dart';
+import 'package:movie_browser/features/SearchMovie/data/models/search_result_hive_model.dart';
 import 'package:movie_browser/features/SearchMovie/data/repositories/movie_search_repository_impl.dart';
-import 'package:movie_browser/features/SearchMovie/domain/entities/movie_detailed_entity.dart';
 import 'package:movie_browser/features/SearchMovie/domain/entities/search_result_entity.dart';
 
 class MockRemoteDataSource extends Mock implements MovieSearchRemoteDataSource {
@@ -40,14 +39,14 @@ void main() {
     final String title = "Ovidius";
     final int page = 3;
     final int totalResults = 32;
-    final searchResultModel = SearchResultModel(
+    final SearchHive searchHive = SearchHive(
       title: title,
       page: page,
       totalResults: totalResults,
       found: true,
       results: [],
     );
-    final SearchResult searchResult = searchResultModel;
+    final SearchResult searchResult = searchHive;
 
     group('search result is not in localdata & have network connection', () {
       setUp(() {
@@ -59,18 +58,18 @@ void main() {
       test('should return remote data when call to remote data is successful',
           () async {
         when(mockRemoteDataSource.searchMovie(title, page))
-            .thenAnswer((_) async => searchResultModel);
+            .thenAnswer((_) async => searchHive);
 
         final result = await repository.searchMovie(title, page);
 
         verify(mockRemoteDataSource.searchMovie(title, page));
-        expect(result, equals(Right(searchResultModel)));
+        expect(result, equals(Right(searchHive)));
       });
 
       test('should cache the data locally when remote search is successful',
           () async {
         when(mockRemoteDataSource.searchMovie(title, page))
-            .thenAnswer((_) async => searchResultModel);
+            .thenAnswer((_) async => searchHive);
 
         await repository.searchMovie(title, page);
 
@@ -106,7 +105,7 @@ void main() {
     group('search result is in localdata', () {
       test('should return locally cached data', () async {
         when(mockLocalDataSource.getCachedSearch(title, page))
-            .thenAnswer((_) async => searchResultModel);
+            .thenAnswer((_) async => SearchHive);
 
         final result = await repository.searchMovie(title, page);
 
@@ -121,12 +120,11 @@ void main() {
     final String id = "tt1";
     final String title = "Ovidius";
     final int year = 2020;
-    final MovieDetailedModel movieDetailedModel = MovieDetailedModel(
+    final MovieDetailedHive movieDetailed = MovieDetailedHive(
       id: id,
       title: title,
       year: year,
     );
-    final MovieDetailed movieDetailed = movieDetailedModel;
 
     group('localData is present', () {
       setUp(() async {
@@ -164,7 +162,7 @@ void main() {
       test('should cache the data locally when remote search is successful',
           () async {
         when(mockRemoteDataSource.getMovieDetails(id))
-            .thenAnswer((_) async => movieDetailedModel);
+            .thenAnswer((_) async => movieDetailed);
 
         await repository.getMovieDetails(id);
 

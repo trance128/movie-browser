@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:movie_browser/features/SearchMovie/presentation/bloc/bloc/movie_search_bloc.dart';
-import 'package:movie_browser/features/SearchMovie/presentation/pages/search_result_page.dart';
+
+import '../bloc/movie_search_bloc/movie_search_bloc.dart';
+import '../pages/search_result_page.dart';
 
 class SearchBox extends StatefulWidget {
   final bool small;
@@ -13,25 +14,24 @@ class SearchBox extends StatefulWidget {
 }
 
 class _SearchBoxState extends State<SearchBox> {
-  final TextEditingController controller = TextEditingController();
-  String input;
-
-  void searchTitle() {
-    BlocProvider.of<MovieSearchBloc>(context).add(SearchMovieEvent(input));
+  void searchTitle(Bloc bloc) {
+    bloc.add(SearchMovieEvent());
     Navigator.of(context).pushNamed(SearchResultPage.routeName);
   }
 
   @override
   Widget build(BuildContext context) {
+    final bloc = BlocProvider.of<MovieSearchBloc>(context);
+
     return TextField(
-      controller: controller,
+      controller: TextEditingController(text: bloc.getTitle),
       decoration: InputDecoration(
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(20),
         ),
       ),
-      onChanged: (value) => input = value,
-      onSubmitted: (_) => searchTitle,
+      onChanged: (value) => bloc.add(TitleChangedEvent(value)),
+      onSubmitted: (_) => searchTitle(bloc),
     );
   }
 }

@@ -15,7 +15,12 @@ class _SearchResultPageState extends State<SearchResultPage> {
       appBar: AppBar(
         title: SearchBox(small: true),
         elevation: 0,
-        actions: [FlatButton(child: Icon(Icons.search), onPressed: SearchBox.searchTitle(),)],
+        actions: [
+          // FlatButton(
+          //   child: Icon(Icons.search),
+          //   onPressed: SearchBox.searchTitle(),
+          // )
+        ],
       ),
     );
   }

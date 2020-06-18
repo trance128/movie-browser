@@ -2,10 +2,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:movie_browser/core/error/exception.dart';
 import 'package:movie_browser/features/SearchMovie/data/datasources/movie_search_local_data_source.dart';
-import 'package:movie_browser/features/SearchMovie/data/models/movie_detailed_model.dart';
-import 'package:movie_browser/features/SearchMovie/data/models/search_result_model.dart';
+import 'package:movie_browser/features/SearchMovie/data/models/movie_brief_hive_model.dart';
+import 'package:movie_browser/features/SearchMovie/data/models/movie_detailed_hive_model.dart';
+import 'package:movie_browser/features/SearchMovie/data/models/search_result_hive_model.dart';
 import 'package:movie_browser/features/SearchMovie/data/repositories/hive_movie_search_repository.dart';
-import 'package:movie_browser/features/SearchMovie/domain/entities/movie_brief_entity.dart';
 
 class MockHiveMovieSearchRepo extends Mock implements HiveMovieSearchRepo {}
 
@@ -22,7 +22,7 @@ void main() {
 
   group('MovieDetailed', () {
     String id = "3";
-    final movieModel = MovieDetailedModel(
+    final movieModel = MovieDetailedHive(
       id: id,
       title: "Hello World Once More",
       year: 1977,
@@ -72,13 +72,13 @@ void main() {
   group('SearchResult', () {
     final String title = "Hello World";
     final page = 3;
-    final SearchResultModel searchResult = SearchResultModel(
+    final SearchHive searchResult = SearchHive(
       title: title,
       page: page,
       found: true,
       totalResults: 1,
       results: [
-        MovieBrief(
+        MovieBriefHive(
           id: "1",
           title: title,
           year: 2018,
@@ -100,13 +100,13 @@ void main() {
     });
 
     test('correctly infers page = 1 when not specified', () async {
-      final SearchResultModel searchResultP1 = SearchResultModel(
+      final SearchHive searchResultP1 = SearchHive(
         title: title,
         page: 1,
         found: true,
         totalResults: 1,
         results: [
-          MovieBrief(
+          MovieBriefHive(
             id: "1",
             title: title,
             year: 2018,

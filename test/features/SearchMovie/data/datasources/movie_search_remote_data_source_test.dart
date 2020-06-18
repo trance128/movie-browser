@@ -5,8 +5,8 @@ import 'package:mockito/mockito.dart';
 import 'package:http/http.dart' as http;
 import 'package:movie_browser/core/error/exception.dart';
 import 'package:movie_browser/features/SearchMovie/data/datasources/movie_search_remote_data_source.dart';
-import 'package:movie_browser/features/SearchMovie/data/models/movie_detailed_model.dart';
-import 'package:movie_browser/features/SearchMovie/data/models/search_result_model.dart';
+import 'package:movie_browser/features/SearchMovie/data/models/movie_detailed_hive_model.dart';
+import 'package:movie_browser/features/SearchMovie/data/models/search_result_hive_model.dart';
 import 'package:movie_browser/features/SearchMovie/domain/entities/movie_detailed_entity.dart';
 import 'package:movie_browser/features/SearchMovie/domain/entities/search_result_entity.dart';
 
@@ -25,7 +25,7 @@ void main() {
 
   group('getMovieDetails', () {
     String id = "3";
-    final expectedModel = MovieDetailedModel.fromJson(
+    final expectedModel = MovieDetailedHive.fromJson(
         json.decode(fixture('details_search_complete.json')));
 
     test('should perform a GET request on a URL with id as the endpoint', () {
@@ -91,9 +91,9 @@ void main() {
       verify(mockHttpClient.get('${BASE_URL}s=$title&page=$page'));
     });
 
-    test('returns SearchResultModel when search is successful', () async {
+    test('returns SearchHive when search is successful', () async {
       int page = 2;
-      final expectedSearchResult = SearchResultModel.fromJson(title, json.decode(fixture('search_result_by_title.json')), page);
+      final expectedSearchResult = SearchHive.fromJson(title, json.decode(fixture('search_result_by_title.json')), page);
       setUpMockHttpClientSuccessSearch();
 
       final result = await dataSource.searchMovie(title, page);

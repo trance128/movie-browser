@@ -15,7 +15,7 @@ class SearchLoading extends MovieSearchState {
 }
 
 class SearchLoaded extends MovieSearchState {
-  final SearchResultModel searchResult;
+  final SearchHive searchResult;
   final bool displayPagination;
   final bool displayFirstPageButton;
   final bool displayPrevPageButton;
@@ -57,7 +57,7 @@ class DetailsLoading extends MovieSearchState {
 }
 
 class DetailsLoaded extends MovieSearchState {
-  final MovieDetailedModel movieDetailed;
+  final MovieDetailedHive movieDetailed;
 
   DetailsLoaded({@required this.movieDetailed});
 

@@ -1,23 +1,25 @@
 import 'package:hive/hive.dart';
-import 'package:movie_browser/features/SearchMovie/data/datasources/movie_search_local_data_source.dart';
-import 'package:movie_browser/features/SearchMovie/domain/entities/movie_detailed_entity.dart';
-import 'package:movie_browser/features/SearchMovie/domain/entities/search_result_entity.dart';
+
+import '../../data/models/search_result_hive_model.dart';
+import '../../domain/entities/movie_detailed_entity.dart';
+import '../datasources/movie_search_local_data_source.dart';
 
 abstract class HiveMovieSearchRepoAbstract extends MovieSearchLocalDataSource {
   Future<void> cacheMovieDetails(MovieDetailed movie);
   Future<MovieDetailed> getCachedMovieDetails(String id);
 
-  Future<void> cacheSearch(SearchResult searchToCache);
-  Future<SearchResult> getCachedSearch(String title, [int page = 1]);
+  Future<void> cacheSearch(SearchHive searchToCache);
+  Future<SearchHive> getCachedSearch(String title, [int page = 1]);
 }
 
 // const vars to prevent misspellings
 const String MOVIEDETAILSBOX = "MovieDetailedBox";
 const String SEARCHBOX = "SearchBox";
 
-class HiveMovieSearchRepo extends MovieSearchLocalDataSource implements HiveMovieSearchRepoAbstract {
-  Box movieDetailsBox = Hive.box(MOVIEDETAILSBOX) ?? null;
-  Box searchBox = Hive.box(SEARCHBOX);
+class HiveMovieSearchRepo extends MovieSearchLocalDataSource
+    implements HiveMovieSearchRepoAbstract {
+  Box movieDetailsBox;
+  Box searchBox;
 
   Future<void> cacheMovieDetails(MovieDetailed movie) async {
     /// expects a MovieDetailed to cache.  Will cache that movie
@@ -30,20 +32,22 @@ class HiveMovieSearchRepo extends MovieSearchLocalDataSource implements HiveMovi
     /// expects a string id as input
     /// returns the MovieDetailed if cached previously
     /// returns null otherwise
-    movieDetailsBox ?? await _openBox(movieDetailsBox, MOVIEDETAILSBOX);
+    if (searchBox == null) searchBox = await _openBox(searchBox, SEARCHBOX);
 
     return await movieDetailsBox.get('$id');
   }
 
-  Future<void> cacheSearch(SearchResult searchToCache) async {
+  Future<void> cacheSearch(SearchHive searchToCache) async {
     /// expects a SearchResult as input, which will be cached
-    searchBox ?? await _openBox(searchBox, SEARCHBOX);
+    if (searchBox == null) searchBox = await _openBox(searchBox, SEARCHBOX);
 
-    searchBox.put('T-${searchToCache.title}::P-${searchToCache.page}', searchToCache);
+    searchBox.put(
+        'T-${searchToCache.title}::P-${searchToCache.page}', searchToCache);
   }
 
-  Future<SearchResult> getCachedSearch(String title, [int page = 1]) async {
-    searchBox ?? await _openBox(searchBox, SEARCHBOX);
+  Future<SearchHive> getCachedSearch(String title, [int page = 1]) async {
+    // searchBox ?? await _openBox(searchBox, SEARCHBOX);
+    if (searchBox == null) searchBox = await _openBox(searchBox, SEARCHBOX);
 
     return searchBox.get('T-$title::P-$page');
   }

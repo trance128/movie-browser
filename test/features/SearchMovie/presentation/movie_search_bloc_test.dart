@@ -3,8 +3,8 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:movie_browser/core/error/failures.dart';
-import 'package:movie_browser/features/SearchMovie/data/models/movie_detailed_model.dart';
-import 'package:movie_browser/features/SearchMovie/data/models/search_result_model.dart';
+import 'package:movie_browser/features/SearchMovie/data/models/movie_detailed_hive_model.dart';
+import 'package:movie_browser/features/SearchMovie/data/models/search_result_hive_model.dart';
 import 'package:movie_browser/features/SearchMovie/domain/usecases/get_movie_details.dart';
 import 'package:movie_browser/features/SearchMovie/domain/usecases/search_movie.dart'
     as s;
@@ -37,11 +37,11 @@ void main() {
     final String title = "abc";
     final int testPage = 1;
 
-    SearchResultModel _buildSearchResult(int page, int totalResults) {
+    SearchHive _buildSearchResult(int page, int totalResults) {
       assert(page > 0);
       assert(totalResults > 0);
 
-      return SearchResultModel(
+      return SearchHive(
         title: title,
         found: true,
         // page is variable for pagination
@@ -67,7 +67,8 @@ void main() {
       when(mockSearchMovie(any))
           .thenAnswer((_) async => Left(NetworkFailure()));
 
-      bloc.add(SearchMovieEvent(title, testPage));
+      bloc.add(TitleChangedEvent(title));
+      bloc.add(SearchMovieEvent(testPage));
       await untilCalled(mockSearchMovie(any));
 
       verify(mockSearchMovie(s.Params(title: title, page: testPage)));
@@ -80,7 +81,10 @@ void main() {
             .thenAnswer((_) async => Left(NetworkFailure()));
         return bloc;
       },
-      act: (bloc) => bloc.add(SearchMovieEvent(title, testPage)),
+      act: (bloc) {
+        bloc.add(TitleChangedEvent(title));
+        return bloc.add(SearchMovieEvent(testPage));
+      },
       expect: [
         SearchLoading(),
         SearchError(message: NETWORK_FAILURE_MESSAGE),
@@ -94,7 +98,10 @@ void main() {
             .thenAnswer((_) async => Left(ServerFailure()));
         return bloc;
       },
-      act: (bloc) => bloc.add(SearchMovieEvent(title, testPage)),
+      act: (bloc) {
+        bloc.add(TitleChangedEvent(title));
+        return bloc.add(SearchMovieEvent(testPage));
+      },
       expect: [
         SearchLoading(),
         SearchError(message: SERVER_FAILURE_MESSAGE),
@@ -104,7 +111,11 @@ void main() {
     blocTest(
       'should emit [SearchLoading], [SearchLoaded] when search is successful',
       build: () async => setUpSuccessfulSearch(1, 1),
-      act: (bloc) => bloc.add(SearchMovieEvent(title, 1)),
+      act: (bloc) {
+        bloc.add(TitleChangedEvent(title));
+        bloc.add(SearchMovieEvent(testPage));
+        return;
+      },
       expect: [
         SearchLoading(),
         SearchLoaded(
@@ -118,7 +129,11 @@ void main() {
       blocTest(
         '[SearchLoaded] shows displayPagination as true if totalResuls > 10',
         build: () async => setUpSuccessfulSearch(1, 11),
-        act: (bloc) => bloc.add(SearchMovieEvent(title, 1)),
+        act: (bloc) {
+          bloc.add(TitleChangedEvent(title));
+          bloc.add(SearchMovieEvent(testPage));
+          return;
+        },
         expect: [
           SearchLoading(),
           SearchLoaded(
@@ -132,7 +147,11 @@ void main() {
       blocTest(
         'displayFirst is false, displayNext is true when page is 1 and totalResults > 10',
         build: () async => setUpSuccessfulSearch(1, 11),
-        act: (bloc) => bloc.add(SearchMovieEvent(title, 1)),
+        act: (bloc) {
+          bloc.add(TitleChangedEvent(title));
+          bloc.add(SearchMovieEvent(testPage));
+          return;
+        },
         expect: [
           SearchLoading(),
           SearchLoaded(
@@ -147,7 +166,11 @@ void main() {
       blocTest(
         'displayPrev is true, displayNext is false when page is 2 and totalResults > 10',
         build: () async => setUpSuccessfulSearch(2, 11),
-        act: (bloc) => bloc.add(SearchMovieEvent(title, 2)),
+        act: (bloc) {
+          bloc.add(TitleChangedEvent(title));
+          bloc.add(SearchMovieEvent(3));
+          return;
+        },
         expect: [
           SearchLoading(),
           SearchLoaded(
@@ -162,7 +185,11 @@ void main() {
       blocTest(
         'displayPrev is true, displayNext is true when page is 2 and totalResults > 20',
         build: () async => setUpSuccessfulSearch(2, 21),
-        act: (bloc) => bloc.add(SearchMovieEvent(title, 2)),
+        act: (bloc) {
+          bloc.add(TitleChangedEvent(title));
+          bloc.add(SearchMovieEvent(2));
+          return;
+        },
         expect: [
           SearchLoading(),
           SearchLoaded(
@@ -177,7 +204,11 @@ void main() {
       blocTest(
         'displayFirst is true, displayPrev is true when page is 3 and totalResults > 20',
         build: () async => setUpSuccessfulSearch(3, 21),
-        act: (bloc) => bloc.add(SearchMovieEvent(title, 3)),
+        act: (bloc) {
+          bloc.add(TitleChangedEvent(title));
+          bloc.add(SearchMovieEvent(3));
+          return;
+        },
         expect: [
           SearchLoading(),
           SearchLoaded(
@@ -192,7 +223,11 @@ void main() {
       blocTest(
         'displayFirst, displayPrev, & displayNext are true, when page is 3 and totalResults > 30',
         build: () async => setUpSuccessfulSearch(3, 31),
-        act: (bloc) => bloc.add(SearchMovieEvent(title, 3)),
+        act: (bloc) {
+          bloc.add(TitleChangedEvent(title));
+          bloc.add(SearchMovieEvent(3));
+          return;
+        },
         expect: [
           SearchLoading(),
           SearchLoaded(
@@ -208,7 +243,11 @@ void main() {
       blocTest(
         'all display properties are true, when page is 3 and totalResults > 40',
         build: () async => setUpSuccessfulSearch(3, 41),
-        act: (bloc) => bloc.add(SearchMovieEvent(title, 3)),
+        act: (bloc) {
+          bloc.add(TitleChangedEvent(title));
+          bloc.add(SearchMovieEvent(3));
+          return;
+        },
         expect: [
           SearchLoading(),
           SearchLoaded(
@@ -225,7 +264,11 @@ void main() {
       blocTest(
         'all display properties are true except displayFirst, when page is 2 and totalResults > 40',
         build: () async => setUpSuccessfulSearch(2, 41),
-        act: (bloc) => bloc.add(SearchMovieEvent(title, 2)),
+        act: (bloc) {
+          bloc.add(TitleChangedEvent(title));
+          bloc.add(SearchMovieEvent(2));
+          return;
+        },
         expect: [
           SearchLoading(),
           SearchLoaded(
@@ -242,7 +285,11 @@ void main() {
       blocTest(
         'displayNext and displayFinal are true, when page is 1 and totalResults > 20',
         build: () async => setUpSuccessfulSearch(1, 21),
-        act: (bloc) => bloc.add(SearchMovieEvent(title, 1)),
+        act: (bloc) {
+          bloc.add(TitleChangedEvent(title));
+          bloc.add(SearchMovieEvent(1));
+          return;
+        },
         expect: [
           SearchLoading(),
           SearchLoaded(
@@ -267,7 +314,7 @@ void main() {
         bloc.add(SearchMovieFirstPageEvent(title));
         await untilCalled(mockSearchMovie(any));
 
-        verify(mockSearchMovie(s.Params(title: title, page: 1)));
+        verify(mockSearchMovie(any));
       });
 
       test('[SearchMovieLastPageEvent] calls searchMovie usecase with page = 1',
@@ -275,7 +322,8 @@ void main() {
         when(mockSearchMovie(any))
             .thenAnswer((_) async => Left(NetworkFailure()));
 
-        bloc.add(SearchMovieLastPageEvent(title, 3));
+        bloc.add(TitleChangedEvent(title));
+        bloc.add(SearchMovieLastPageEvent(3));
         await untilCalled(mockSearchMovie(any));
 
         verify(mockSearchMovie(s.Params(title: title, page: 3)));
@@ -286,8 +334,8 @@ void main() {
   group('getMovieDetails', () {
     final String id = "tt123";
     final String title = "abc";
-    final MovieDetailedModel movieDetailed =
-        MovieDetailedModel(id: id, title: title, year: 2020);
+    final MovieDetailedHive movieDetailed =
+        MovieDetailedHive(id: id, title: title, year: 2020);
 
     test('calls getMovieDetails usecase', () async {
       when(mockGetMovieDetails(any))

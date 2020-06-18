@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:movie_browser/features/SearchMovie/data/models/movie_detailed_model.dart';
+import 'package:movie_browser/features/SearchMovie/data/models/movie_detailed_hive_model.dart';
 import 'package:movie_browser/features/SearchMovie/domain/entities/movie_detailed_entity.dart';
 
 import '../../../../fixtures/fixture_reader.dart';
@@ -10,10 +10,10 @@ void main() {
   String title = "hello world";
   int year = 2020;
   final movieDetailsModel =
-      MovieDetailedModel(id: id, title: title, year: year);
+      MovieDetailedHive(id: id, title: title, year: year);
 
   // expected values for details_search_complete fixture
-  final completeMovieDetailedModel = MovieDetailedModel(
+  final completeMovieDetailedHive = MovieDetailedHive(
     id: "3",
     title: "Hello World Once More",
     year: 1977,
@@ -33,10 +33,10 @@ void main() {
     rating: 90,
   );
 
-  MovieDetailedModel _getMovieFromJson(String path) {
-    /// returns the MovieDetailedModel from given json fixture
+  MovieDetailedHive _getMovieFromJson(String path) {
+    /// returns the MovieDetailedHive from given json fixture
     Map<String, dynamic> jsonMap = json.decode(fixture(path));
-    return MovieDetailedModel.fromJson(jsonMap);
+    return MovieDetailedHive.fromJson(jsonMap);
   }
 
   group('fromJson', () {
@@ -57,21 +57,21 @@ void main() {
       final result = _getMovieFromJson('details_search_complete.json');
       test('should return a valid model when all params are passed', () {
         // assert
-        expect(result, completeMovieDetailedModel);
+        expect(result, completeMovieDetailedHive);
       });
 
       test(
           'fields that don\'t require conversion are correclty registered when they\'re present',
           () {
-        expect(result.poster, completeMovieDetailedModel.poster);
-        expect(result.plot, completeMovieDetailedModel.plot);
-        expect(result.rated, completeMovieDetailedModel.rated);
-        expect(result.genre, completeMovieDetailedModel.genre);
-        expect(result.director, completeMovieDetailedModel.director);
-        expect(result.writer, completeMovieDetailedModel.writer);
-        expect(result.actors, completeMovieDetailedModel.actors);
-        expect(result.language, completeMovieDetailedModel.language);
-        expect(result.awards, completeMovieDetailedModel.awards);
+        expect(result.poster, completeMovieDetailedHive.poster);
+        expect(result.plot, completeMovieDetailedHive.plot);
+        expect(result.rated, completeMovieDetailedHive.rated);
+        expect(result.genre, completeMovieDetailedHive.genre);
+        expect(result.director, completeMovieDetailedHive.director);
+        expect(result.writer, completeMovieDetailedHive.writer);
+        expect(result.actors, completeMovieDetailedHive.actors);
+        expect(result.language, completeMovieDetailedHive.language);
+        expect(result.awards, completeMovieDetailedHive.awards);
       });
 
       test('runtime converted to int and holds correct value', () {
@@ -122,7 +122,7 @@ void main() {
         "Year": "Isn't correct"
       };
 
-      final result = MovieDetailedModel.fromJson(jsonMap);
+      final result = MovieDetailedHive.fromJson(jsonMap);
 
       expect(result.year, 0);
     });
