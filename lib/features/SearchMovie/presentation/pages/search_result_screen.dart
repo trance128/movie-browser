@@ -4,6 +4,7 @@ import 'package:movie_browser/features/SearchMovie/data/models/movie_brief_hive_
 import 'package:movie_browser/features/SearchMovie/presentation/bloc/movie_search_bloc/movie_search_bloc.dart';
 import 'package:movie_browser/features/SearchMovie/presentation/pages/movie_details_screen.dart';
 import 'package:movie_browser/features/SearchMovie/presentation/widgets/search_box.dart';
+import 'package:movie_browser/features/SearchMovie/presentation/widgets/show_error.dart';
 
 class SearchResultScreen extends StatefulWidget {
   static const routeName = '/results';
@@ -46,41 +47,63 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
   }
 
   Widget _buildBody(BuildContext context, MovieSearchBloc bloc) {
+    /// Builds the page body.  Needs context and bloc passed in
+    /// First builds listview containing all results from bloc
+    /// then, when appropraite, shows circualr progress indicator
+    /// or error
     final state = bloc.state;
-    print('in this function');
+    List<MovieBriefHive> _searchResultList = bloc.getResultsList;
 
-    if (state is MovieSearchInitial) {
-      print('Moviesearcchinitial');
-      return Container();
-    } else if (state is SearchLoading) {
-      print('loading');
-      return Center(
-        child: CircularProgressIndicator(),
+    if (_searchResultList.length == 0 || state is SearchError) {
+      return Column(
+        children: [
+          if (state is SearchLoading) CircularProgressIndicator(),
+          if (state is SearchError) ShowError(state.message),
+        ],
       );
-    } else if (state is SearchLoaded) {
-      print('loaded');
-      return _buildLoadedState(context, state);
-    } else {
-      return Container(child: Text('State is $state'));
     }
-  }
-
-  Widget _buildLoadedState(BuildContext context, SearchLoaded state) {
-    print('loaded state');
     return Column(
       children: [
-        Expanded(
-          child: Container(
-            child: ListView.builder(
-              itemCount: state.searchResult.results.length,
-              itemBuilder: (BuildContext ctx, int index) {
-                final MovieBriefHive item = state.searchResult.results[index];
-                return _buildItem(item, bloc);
-              },
+        Container(
+          height: state is SearchLoaded
+              ? MediaQuery.of(context).size.height * 0.89 -
+                  MediaQuery.of(context).viewInsets.bottom
+              : MediaQuery.of(context).size.height * 0.77 -
+                  MediaQuery.of(context).viewInsets.bottom,
+          child: _buildResultList(context, _searchResultList),
+        ),
+        if (state is SearchLoading) CircularProgressIndicator(),
+      ],
+    );
+  }
+
+  void _loadMoreResults() {
+    print('how you doing');
+    bloc.add(SearchMovieMoreResultsEvent());
+  }
+
+  Widget _buildResultList(BuildContext context, List<MovieBriefHive> list) {
+    return NotificationListener<ScrollNotification>(
+      onNotification: (ScrollNotification scrollInfo) {
+        if (scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
+          _loadMoreResults();
+        }
+      },
+      child: Column(
+        children: [
+          Expanded(
+            child: Container(
+              child: ListView.builder(
+                itemCount: list.length,
+                itemBuilder: (BuildContext ctx, int index) {
+                  final MovieBriefHive item = list[index];
+                  return _buildItem(item, bloc);
+                },
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -149,6 +172,7 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
     bloc = BlocProvider.of<MovieSearchBloc>(context);
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Colors.grey[100],
       appBar: _appBar(context, bloc, addSearchEvent, appBarSize),
       body: BlocBuilder<MovieSearchBloc, MovieSearchState>(

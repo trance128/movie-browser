@@ -16,30 +16,13 @@ class SearchLoading extends MovieSearchState {
 
 class SearchLoaded extends MovieSearchState {
   final SearchHive searchResult;
-  final bool displayPagination;
-  final bool displayFirstPageButton;
-  final bool displayPrevPageButton;
-  final bool displayNextPageButton;
-  final bool displayFinalPageButton;
 
   SearchLoaded({
     @required this.searchResult,
-    @required this.displayPagination,
-    this.displayFirstPageButton = false,
-    this.displayPrevPageButton = false,
-    this.displayNextPageButton = false,
-    this.displayFinalPageButton = false,
   });
-  
+
   @override
-  List<Object> get props => [
-        searchResult,
-        displayPagination,
-        displayFirstPageButton,
-        displayNextPageButton,
-        displayPrevPageButton,
-        displayFinalPageButton,
-      ];
+  List<Object> get props => [searchResult];
 }
 
 class SearchError extends MovieSearchState {

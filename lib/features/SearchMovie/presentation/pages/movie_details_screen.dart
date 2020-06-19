@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:movie_browser/features/SearchMovie/data/models/movie_detailed_hive_model.dart';
-import 'package:movie_browser/features/SearchMovie/presentation/bloc/movie_search_bloc/movie_search_bloc.dart';
-import 'package:movie_browser/features/SearchMovie/presentation/pages/search_result_screen.dart';
+
+import '../../data/models/movie_detailed_hive_model.dart';
+import '../bloc/movie_search_bloc/movie_search_bloc.dart';
+import '../widgets/show_error.dart';
 
 class MovieDetailsScreen extends StatelessWidget {
   static const String routeName = '/details';
@@ -109,11 +110,7 @@ class MovieDetailsScreen extends StatelessWidget {
     } else if (state is DetailsLoaded) {
       return _buildLoaded(context, state);
     } else if (state is DetailsError) {
-      return _buildError(context);
-    } else {
-      return Center(
-        child: _buildError(context),
-      );
+      return _buildError(context, state.message);
     }
   }
 
@@ -206,30 +203,8 @@ class MovieDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildError(BuildContext context) {
-    return Center(
-      child: Column(
-        children: [
-          SizedBox(height: MediaQuery.of(context).size.height * 0.2),
-          Text(
-            'Something\nhas gone wrong',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 30,
-              color: Colors.red[900],
-            ),
-          ),
-          SizedBox(height: 20),
-          Text(
-            'Plese try again later',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 20,
-            ),
-          ),
-        ],
-      ),
-    );
+  Widget _buildError(BuildContext context, String message) {
+    return ShowError(message);
   }
 
   Future<bool> _onBackPressed(BuildContext context, MovieSearchBloc bloc) {
