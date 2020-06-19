@@ -48,7 +48,6 @@ class MovieSearchBloc extends Bloc<MovieSearchEvent, MovieSearchState> {
 
     // [SearchMovieEvent]
     if (event is SearchMovieEvent) {
-      print('about to yield searchmovie');
       yield* _searchMovie(searchMovie, _title, event.page);
     } else if (event is SearchMovieFirstPageEvent) {
       yield* _searchMovie(searchMovie, _title, 1);

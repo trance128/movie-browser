@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../bloc/movie_search_bloc/movie_search_bloc.dart';
-import '../pages/search_result_page.dart';
+import '../pages/search_result_screen.dart';
 
 class SearchBox extends StatefulWidget {
   final bool small;
@@ -16,7 +16,7 @@ class SearchBox extends StatefulWidget {
 class _SearchBoxState extends State<SearchBox> {
   void searchTitle(Bloc bloc) {
     bloc.add(SearchMovieEvent());
-    Navigator.of(context).pushNamed(SearchResultPage.routeName);
+    Navigator.of(context).pushNamed(SearchResultScreen.routeName);
   }
 
   @override

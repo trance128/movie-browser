@@ -82,16 +82,23 @@ MovieDetailedHive _getMovieDetailedModel(Map<String, dynamic> json) {
   /// this function made specifically for http://www.omdbapi.com/ json response
   /// modify this function to use different api
 
+  // We only want the initial release year, so in the case of a series,
+  // which might have year as 2012 - 2018, we only use that first number
+  // returns 0 in case something goes really wrong
   int year;
   try {
-    year = int.parse(json['Year']);
-  } on FormatException {
+    if (json['Year'].length > 4) {
+      year = int.parse(json['Year'].substring(0, 4));
+    } else {
+      year = int.parse(json['Year']);
+    }
+  } catch (e) {
     year = 0;
   }
 
   return MovieDetailedHive(
     id: json['imdbID'],
-    title: "abcd",
+    title: _getValueOrNull(json['Title']),
     year: year,
     poster: _getValueOrNull(json['Poster']),
     plot: _getValueOrNull(json['Plot']),

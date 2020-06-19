@@ -3,7 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'features/SearchMovie/presentation/bloc/movie_search_bloc/movie_search_bloc.dart';
 import 'features/SearchMovie/presentation/pages/home_screen.dart';
-import 'features/SearchMovie/presentation/pages/search_result_page.dart';
+import 'features/SearchMovie/presentation/pages/movie_details_screen.dart';
+import 'features/SearchMovie/presentation/pages/search_result_screen.dart';
 import 'injection_container.dart' as di;
 import 'injection_container.dart';
 
@@ -24,7 +25,8 @@ class MyApp extends StatelessWidget {
         home: HomeScreen(),
         routes: {
           HomeScreen.routeName: (context) => HomeScreen(),
-          SearchResultPage.routeName: (context) => SearchResultPage(),
+          SearchResultScreen.routeName: (context) => SearchResultScreen(),
+          MovieDetailsScreen.routeName: (context) => MovieDetailsScreen(),
         },
       ),
     );

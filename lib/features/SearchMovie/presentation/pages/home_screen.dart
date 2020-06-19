@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../bloc/movie_search_bloc/movie_search_bloc.dart';
 import '../widgets/search_box.dart';
-import 'search_result_page.dart';
+import 'search_result_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   static const routeName = "/home";
@@ -18,7 +18,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void addSearchEvent() {
     BlocProvider.of<MovieSearchBloc>(context).add(SearchMovieEvent());
-    Navigator.of(context).pushNamed(SearchResultPage.routeName);
+    Navigator.of(context).pushNamed(SearchResultScreen.routeName);
   }
 
   @override

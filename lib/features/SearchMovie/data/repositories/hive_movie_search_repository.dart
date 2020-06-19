@@ -23,7 +23,8 @@ class HiveMovieSearchRepo extends MovieSearchLocalDataSource
 
   Future<void> cacheMovieDetails(MovieDetailed movie) async {
     /// expects a MovieDetailed to cache.  Will cache that movie
-    movieDetailsBox ?? await _openBox(movieDetailsBox, MOVIEDETAILSBOX);
+    if (movieDetailsBox == null)
+      movieDetailsBox = await _openBox(movieDetailsBox, MOVIEDETAILSBOX);
 
     movieDetailsBox.put('${movie.id}', movie);
   }
@@ -32,7 +33,8 @@ class HiveMovieSearchRepo extends MovieSearchLocalDataSource
     /// expects a string id as input
     /// returns the MovieDetailed if cached previously
     /// returns null otherwise
-    if (searchBox == null) searchBox = await _openBox(searchBox, SEARCHBOX);
+    if (movieDetailsBox == null)
+      movieDetailsBox = await _openBox(searchBox, MOVIEDETAILSBOX);
 
     return await movieDetailsBox.get('$id');
   }

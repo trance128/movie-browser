@@ -1,7 +1,6 @@
 import 'package:hive/hive.dart';
 import 'package:meta/meta.dart';
 
-import '../../domain/entities/movie_brief_entity.dart';
 import '../../domain/entities/search_result_entity.dart';
 import 'movie_brief_hive_model.dart';
 
@@ -62,11 +61,26 @@ SearchHive _createSearchResultModel(String title, Map<String, dynamic> json,
 
   List<MovieBriefHive> results = [];
 
+  int _parseYear(String year) {
+    // We only want the initial release year, so in the case of a series,
+    // which might have year as 2012 - 2018, we only use that first number
+    // returns 0 in case something goes really wrong
+    try {
+      if (year.length > 4) {
+        return int.parse(year.substring(0, 4));
+      } else {
+        return int.parse(year);
+      }
+    } catch (e) {
+      return 0;
+    }
+  }
+
   for (var result in json["Search"]) {
     results.add(MovieBriefHive(
       id: result['imdbID'],
       title: result['Title'],
-      year: int.parse(result['Year']),
+      year: _parseYear(result['Year']),
       poster: result['Poster'],
     ));
   }
